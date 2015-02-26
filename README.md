@@ -1,15 +1,15 @@
-## OpenFarm
+# OpenFarm
 
-# Description
+## Description
 A 2D, open-source, farming simulator written in JavaScript with a dedicated server on Linux. 
 
-# License
+## License
 GNU AFFERO GPL v3.0
 
-# Usage
+## Usage
 
-# Dependencies
+## Dependencies
 
-# Build Instructions
+## Build Instructions
 
-# Install Instructions
+## Install Instructions
