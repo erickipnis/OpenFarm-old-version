@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>OpenFarm Client</title>
+	<meta charset="UTF-8"/>
+
+	<style type="text/css">
+
+	#canvasContainer{
+
+		width: 100%;
+		text-align: center;
+	}
+
+	#mainCanvas{
+
+		display: inline;
+		background-color: gray;
+	}
+	</style>
+
+	<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+	<script src="/socket.io/socket.io.js"</script>
+
+	<script>		
+
+		"use strict";
+
+		var socket;
+		var canvas;
+		var ctx;
+
+		function init(){
+
+			socket = io.connect();
+
+			canvas = document.getElementById('mainCanvas');
+			ctx = canvas.getContext('2d');
+		}
+
+		window.onload = init;
+
+		//TODO: ADD MOVEMENT BUTTONS AND EVENTS, CLICK EVENTS, ETC.
+		// CENTER THE CANVAS
+
+	</script>
+</head>
+<body>
+	<div id="canvasContainer">
+		<canvas id="mainCanvas" width="800", height="600">
+			Please use a browser compatible with HTML5 technologies.
+		</canvas>
+	</div>
+</body>
+</html>
