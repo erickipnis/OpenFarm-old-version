@@ -10,13 +10,45 @@
 
 		width: 100%;
 		text-align: center;
+		
 	}
 
 	#mainCanvas{
 
-		display: inline;
-		background-color: gray;
+		background-color: gray;	
+		margin: auto;
+		display: block;
+
 	}
+
+	#leftButton{
+		
+		margin: auto;
+		display: inline;
+		margin-top: 10px;
+	}
+
+	#rightButton{
+
+		margin: auto;
+		display: inline;
+		margin-top: 10px;
+	}
+
+	#upButton{
+
+		margin: auto;
+		display: inline;
+		margin-top: 10px;
+	}
+
+	#downButton{
+
+		margin: auto;
+		display: inline;
+		margin-top: 10px;
+	}
+
 	</style>
 
 	<script src="http://localhost:3000/socket.io/socket.io.js"></script>
@@ -29,19 +61,100 @@
 		var socket;
 		var canvas;
 		var ctx;
+		var upButton;
+		var downButton;
+		var leftButton;
+		var rightButton;
 
 		function init(){
 
+			// Connect the client socket
 			socket = io.connect();
 
-			canvas = document.getElementById('mainCanvas');
+			// Get the canvas and canvas context 
+			canvas = document.querySelector("#mainCanvas");
 			ctx = canvas.getContext('2d');
+
+			upButton = document.querySelector("#upButton");
+			downButton = document.querySelector("#downButton");
+			leftButton = document.querySelector("#leftButton");
+			rightButton = document.querySelector("#rightButton");
+
+			setupClientEvents();
+			setupButtonEvents();
 		}
 
 		window.onload = init;
 
-		//TODO: ADD MOVEMENT BUTTONS AND EVENTS, CLICK EVENTS, ETC.
-		// CENTER THE CANVAS
+		//TODO: ADD MOVEMENT BUTTON EVENTS, CLICK EVENTS, ETC.		
+
+		// Sets up the client-side, socket.io custom "on" event handlers to recieve data from the server
+		function setupClientEvents(){
+
+			socket.on("onMoveUp", function(data){
+
+				Console.log("The player moved up!");
+			});
+
+			socket.on("onMoveDown", function(data){
+
+				Console.log("The player moved down!");
+			});
+
+			socket.on("onMoveLeft", function(data){
+
+				Console.log("The player moved left!");
+			});
+
+			socket.on("onMoveRight", function(data){
+
+				Console.log("The player moved right!");
+			});
+		}
+
+		// Sets up the button "onclick" events to handle sending data to the server through socket.io
+		function setupButtonEvents(){
+
+			upButton.onclick = function(){
+
+				var data = {
+
+					message: "Moved up."
+				};
+
+				socket.emit("onMoveUp", data);
+			};
+
+			downButton.onclick = function(){
+
+				var data = {
+
+					message: "Moved down."
+				};
+
+				socket.emit("onMoveDown", data);
+			};
+
+			leftButton.onclick = function(){
+
+				var data = {
+
+					message: "Moved left."
+				};
+
+				socket.emit("onMoveLeft", data);
+			};
+
+			rightButton.onclick = function(){
+
+				var data = {
+
+					message: "Moved right."
+				};
+
+				socket.emit("onMoveRight", data);
+			};
+		}
 
 	</script>
 </head>
@@ -50,6 +163,10 @@
 		<canvas id="mainCanvas" width="800", height="600">
 			Please use a browser compatible with HTML5 technologies.
 		</canvas>
+		<button id="upButton">Move Up</button>
+		<button id="downButton">Move Down</button>
+		<button id="leftButton">Move Left</button>
+		<button id="rightButton">Move Right</button>
 	</div>
 </body>
 </html>
