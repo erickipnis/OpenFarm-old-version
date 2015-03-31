@@ -52,7 +52,7 @@
 	</style>
 
 	<script src="http://localhost:3000/socket.io/socket.io.js"></script>
-	<script src="/socket.io/socket.io.js"</script>
+	<script src="/socket.io/socket.io.js"></script>
 
 	<script>		
 
@@ -80,10 +80,9 @@
 			leftButton = document.querySelector("#leftButton");
 			rightButton = document.querySelector("#rightButton");
 
-			console.log(upButton);
-
 			setupClientEvents();
 			setupButtonEvents();
+			setupMouseEvents();
 		}
 
 		window.onload = init;
@@ -95,22 +94,27 @@
 
 			socket.on("onMoveUp", function(playerData){
 
-				console.log("The player " + playerData.message + "!");
+				console.log("The player " + playerData.message);
 			});
 
 			socket.on("onMoveDown", function(playerData){
 
-				console.log("The player " + playerData.message + "!");
+				console.log("The player " + playerData.message);
 			});
 
 			socket.on("onMoveLeft", function(playerData){
 
-				console.log("The player " + playerData.message + "!");
+				console.log("The player " + playerData.message);
 			});
 
 			socket.on("onMoveRight", function(playerData){
 
-				console.log("The player " + playerData.message + "!");
+				console.log("The player " + playerData.message);
+			});
+
+			socket.on("onLeftMouseClick", function(playerData){
+
+				console.log("The player " + playerData.message);
 			});
 		}
 
@@ -121,7 +125,7 @@
 
 				var playerData = {
 
-					message: "moved up."
+					message: "moved up!"
 				};
 
 				socket.emit("onMoveUp", playerData);
@@ -131,7 +135,7 @@
 
 				var playerData = {
 
-					message: "moved down."
+					message: "moved down!"
 				};
 
 				socket.emit("onMoveDown", playerData);
@@ -141,7 +145,7 @@
 
 				var playerData = {
 
-					message: "moved left."
+					message: "moved left!"
 				};
 
 				socket.emit("onMoveLeft", playerData);
@@ -151,10 +155,26 @@
 
 				var playerData = {
 
-					message: "moved right."
+					message: "moved right!"
 				};
 
 				socket.emit("onMoveRight", playerData);
+			};
+		}
+
+		function setupMouseEvents(){
+
+			canvas.onclick = function(event){
+
+				if (event.which == 1){
+
+					var playerData = {
+
+						message: "left clicked!"
+					};
+
+					socket.emit("onLeftMouseClick", playerData);
+				}
 			};
 		}
 

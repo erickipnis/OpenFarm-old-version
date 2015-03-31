@@ -2,7 +2,7 @@
   "name": "OpenFarm",
   "version": "1.0.0",
   "description": "A 2D Open-Source Farming Simulator",
-  "main": "openfarm.js",
+  "main": "serverHTTP.js",
   "scripts": {
   	"start": "node ./src/serverHTTP.js",
   	"pretest": "jshint ./src",

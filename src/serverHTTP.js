@@ -47,11 +47,20 @@ function setupMovementEvents(){
 
 }
 
-io.sockets.on('connection', function(connectionSocket){
+function setupMouseEvents(){
 
-	socket.join('room1');
+	socket.on("onLeftMouseClick", function(playerData){
+
+		io.sockets.in("room1").emit("onLeftMouseClick", playerData);
+	});
+}
+
+io.sockets.on('connection', function(connectionSocket){
 
 	socket = connectionSocket;
 
+	socket.join('room1');
+
 	setupMovementEvents();
+	setupMouseEvents();
 });
