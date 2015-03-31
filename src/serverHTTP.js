@@ -23,7 +23,35 @@ function onRequest(request, response){
 	response.end();
 }
 
-io.sockets.on('connection', function(socket){
+function setupMovementEvents(){
+
+	socket.on("onMoveUp", function(playerData){
+
+		io.sockets.in("room1").emit("onMoveUp", playerData);
+	});
+
+	socket.on("onMoveDown", function(playerData){
+
+		io.sockets.in("room1").emit("onMoveDown", playerData);
+	});
+
+	socket.on("onMoveLeft", function(playerData){
+
+		io.sockets.in("room1").emit("onMoveLeft", playerData);
+	});
+
+	socket.on("onMoveRight", function(playerData){
+
+		io.sockets.in("room1").emit("onMoveRight", playerData);
+	});
+
+}
+
+io.sockets.on('connection', function(connectionSocket){
 
 	socket.join('room1');
+
+	socket = connectionSocket;
+
+	setupMovementEvents();
 });

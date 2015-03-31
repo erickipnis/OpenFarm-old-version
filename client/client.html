@@ -80,6 +80,8 @@
 			leftButton = document.querySelector("#leftButton");
 			rightButton = document.querySelector("#rightButton");
 
+			console.log(upButton);
+
 			setupClientEvents();
 			setupButtonEvents();
 		}
@@ -91,24 +93,24 @@
 		// Sets up the client-side, socket.io custom "on" event handlers to recieve data from the server
 		function setupClientEvents(){
 
-			socket.on("onMoveUp", function(data){
+			socket.on("onMoveUp", function(playerData){
 
-				Console.log("The player moved up!");
+				console.log("The player " + playerData.message + "!");
 			});
 
-			socket.on("onMoveDown", function(data){
+			socket.on("onMoveDown", function(playerData){
 
-				Console.log("The player moved down!");
+				console.log("The player " + playerData.message + "!");
 			});
 
-			socket.on("onMoveLeft", function(data){
+			socket.on("onMoveLeft", function(playerData){
 
-				Console.log("The player moved left!");
+				console.log("The player " + playerData.message + "!");
 			});
 
-			socket.on("onMoveRight", function(data){
+			socket.on("onMoveRight", function(playerData){
 
-				Console.log("The player moved right!");
+				console.log("The player " + playerData.message + "!");
 			});
 		}
 
@@ -117,42 +119,42 @@
 
 			upButton.onclick = function(){
 
-				var data = {
+				var playerData = {
 
-					message: "Moved up."
+					message: "moved up."
 				};
 
-				socket.emit("onMoveUp", data);
+				socket.emit("onMoveUp", playerData);
 			};
 
 			downButton.onclick = function(){
 
-				var data = {
+				var playerData = {
 
-					message: "Moved down."
+					message: "moved down."
 				};
 
-				socket.emit("onMoveDown", data);
+				socket.emit("onMoveDown", playerData);
 			};
 
 			leftButton.onclick = function(){
 
-				var data = {
+				var playerData = {
 
-					message: "Moved left."
+					message: "moved left."
 				};
 
-				socket.emit("onMoveLeft", data);
+				socket.emit("onMoveLeft", playerData);
 			};
 
 			rightButton.onclick = function(){
 
-				var data = {
+				var playerData = {
 
-					message: "Moved right."
+					message: "moved right."
 				};
 
-				socket.emit("onMoveRight", data);
+				socket.emit("onMoveRight", playerData);
 			};
 		}
 
