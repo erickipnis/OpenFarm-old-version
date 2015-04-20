@@ -1,0 +1,41 @@
+#canvasContainer{
+
+	width: 100%;
+	text-align: center;		
+}
+
+#mainCanvas{
+
+	background-color: #01A611;	
+	margin: auto;
+	display: block;
+	box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+}
+
+#leftButton{
+		
+	margin: auto;
+	display: inline;
+	margin-top: 10px;
+}
+
+#rightButton{
+
+	margin: auto;
+	display: inline;
+	margin-top: 10px;
+}
+
+#upButton{
+
+	margin: auto;
+	display: inline;
+	margin-top: 10px;
+}
+
+#downButton{
+
+	margin: auto;
+	display: inline;
+	margin-top: 10px;
+}

@@ -1,0 +1,23 @@
+doctype html
+html(lang="en")
+  head
+    title OpenFarm Login
+    meta(charset="UTF-8")
+  block append style
+    link(rel="stylesheet", type="text/css", href="/resources/styles/loginstyles.css")
+  block scripts
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js")
+    script(src="/resources/scripts/login.js")
+  body
+    #form_div
+      h1#title OpenFarm
+      h3#login_title Login
+      form#login_form(name="login_form", action="/login", method="POST")
+        label(for="username") Username: 
+        input#username_input(type="text", name="username", placeholder="username")
+        label(for="password") Password: 
+        input#password_input(type="password", name="password", placeholder="password")
+        a#login_submit(href="#") Sign in
+    h3
+      span#error_msg
+        | The username or password entered is invalid! Please check your input and try again!
