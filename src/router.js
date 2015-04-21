@@ -10,7 +10,7 @@ var router = function(app){
 	app.post("/signup", middleware.requiresSecure, middleware.requiresLogout, controllers.Account.signup);
 	app.get("/logout", middleware.requiresLogin, controllers.Account.logout);
 	app.get("/game", middleware.requiresLogin, controllers.Account.gamePage);
-	app.get("/", middleware.requiresSecure, controllers.Account.loginPage);
+	app.get("/", middleware.requiresSecure, middleware.requiresLogout, controllers.Account.loginPage);
 };
 
 module.exports = router;

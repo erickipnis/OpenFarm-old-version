@@ -42,7 +42,7 @@ var login = function(request, response){
 
 		request.session.account = account.toAPI();
 
-		res.json({redirect: '/game'});
+		response.json({redirect: '/game'});
 	});
 };
 
@@ -74,7 +74,7 @@ var signup = function(request, response){
 			if (err){
 
 				console.log(err);
-				return response.status(400).json({error: "An error occured"});
+				return response.status(400).json({error: "The username entered already exists. Please choose another username and try again!"});
 			}
 
 			request.session.account = newAccount.toAPI();
