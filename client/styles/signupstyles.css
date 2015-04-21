@@ -31,20 +31,8 @@ html, body{
 	padding-right: 3px;
 }
 
-#login_submit{
+#signup_submit{
 
 	display: block;
-	padding-top: 20px;
-}
-
-#info_div{
-
-	margin: 0 auto;
-	width: 800px;
-	text-align: center;
-}
-
-#signup_paragraph{
-
 	padding-top: 20px;
 }

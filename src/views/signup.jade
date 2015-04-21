@@ -1,0 +1,23 @@
+doctype html
+html(lang='en')
+  head
+    title OpenFarm Sign Up
+    meta(charset='UTF-8')
+    link(rel='stylesheet', type='text/css', href='/resources/styles/signupstyles.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js')
+    script(src='/resources/scripts/signup.js')
+  body
+    #form_div
+      h1#title OpenFarm
+      h3#signup_title Sign Up
+      form#signup_form(name='signup_form', action='/signup', method='POST')
+        label#username_label(for='username') Username: 
+        input#username_input(type='text', name='username', placeholder='username')
+        label#password_label(for='password') Password: 
+        input#password_input(type='password', name='password', placeholder='password')
+        label#password_label2(for='password2') Confirm Password: 
+        input#password_input2(type='password', name='password2', placeholder='confirm password')
+        a#signup_submit(href='#') Submit
+    #error_div
+      h3
+        span#error_msg

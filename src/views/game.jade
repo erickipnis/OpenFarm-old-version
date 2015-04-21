@@ -1,15 +1,15 @@
 doctype html
-html(lang="en")
+html(lang='en')
   head
     title OpenFarm Client
-    meta(charset="UTF-8")
-    link(rel="stylesheet", type="text/css", href="../../client/styles/gamestyles.css")
-    script(src="http://localhost:3000/socket.io/socket.io.js")
-    script(src="/socket.io/socket.io.js")
-    script(src="../../client/client.js")
+    meta(charset='UTF-8')
+    link(rel='stylesheet', type='text/css', href='/resources/styles/gamestyles.css')
+    script(src='http://localhost:3000/socket.io/socket.io.js')
+    script(src='/socket.io/socket.io.js')
+    script(src='/resources/scripts/gameclient.js')
   body
     #canvasContainer
-      canvas#mainCanvas(width="800", height="600")
+      canvas#mainCanvas(width='800', ,='', height='600')
         | Please use a browser compatible with HTML5 technologies.
       button#upButton Move Up
       button#downButton Move Down

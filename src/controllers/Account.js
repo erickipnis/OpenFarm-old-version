@@ -48,17 +48,17 @@ var login = function(request, response){
 
 var signup = function(request, response){
 
-	if (!request.body.username || !request.body.pass || !request.body.pass2){
+	if (!request.body.username || !request.body.password || !request.body.password2){
 
 		return response.status(400).json({error: "All fields are required. Please fill out all of the fields!"});
 	}
 
-	if (!request.body.pass !== request.body.pass2){
+	if (request.body.password !== request.body.password2){
 
 		return response.status(400).json({error: "The passwords entered do not match. Please retype your password in both fields and try again."});
 	}
 
-	Account.AccountModel.generateHash(request.body.pass, function(salt, hash){
+	Account.AccountModel.generateHash(request.body.password, function(salt, hash){
 
 		var accountData = {
 

@@ -33,19 +33,28 @@ $(document).ready(function(){
 		$("#error_msg").show();		
 	}
 
-	$("#login_submit").on("click", function(event){
+	$("#signup_submit").on("click", function(event){
 
 		event.preventDefault();
 
-		if ($("#username_input").val() == '' || $("#password_input").val() == ''){
+		if ($("#user_input").val() === '' || $("#password_input").val() === '' || $("#password_input2").val() === ''){
 
 			generateError("All fields required! Please check your login details and try again.");
 
 			return false;
 		}
 
-		sendAjaxData($("#login_form").attr("action"), $("#login_form").serialize());
+		if ($("#password_input").val() !== $("#password_input2").val()){
+
+			generateError("Passwords entered do not match. Please check your login details and try again.");
+
+			return false;
+		}
+
+		sendAjaxData($("#signup_form").attr("action"), $("#signup_form").serialize());
 
 		return false;
 	});
+
+
 });
