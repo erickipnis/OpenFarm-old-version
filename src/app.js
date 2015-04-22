@@ -75,3 +75,45 @@ server.listen(port);
 
 // Pass the app to the router to hook up all of the jade views
 router(app);
+
+function setupMovementEvents(){
+
+	socket.on("onMoveUp", function(playerData){
+
+		io.sockets.in("room1").emit("onMoveUp", playerData);
+	});
+
+	socket.on("onMoveDown", function(playerData){
+
+		io.sockets.in("room1").emit("onMoveDown", playerData);
+	});
+
+	socket.on("onMoveLeft", function(playerData){
+
+		io.sockets.in("room1").emit("onMoveLeft", playerData);
+	});
+
+	socket.on("onMoveRight", function(playerData){
+
+		io.sockets.in("room1").emit("onMoveRight", playerData);
+	});
+
+}
+
+function setupMouseEvents(){
+
+	socket.on("onLeftMouseClick", function(playerData){
+
+		io.sockets.in("room1").emit("onLeftMouseClick", playerData);
+	});
+}
+
+io.sockets.on('connection', function(connectionSocket){
+
+	socket = connectionSocket;
+
+	socket.join('room1');
+
+	setupMovementEvents();
+	setupMouseEvents();
+});
