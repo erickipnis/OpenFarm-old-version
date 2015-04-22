@@ -11,8 +11,13 @@
 	<script src="/resources/scripts/gameclient.js"></script>
 </head>
 <body>
+	<div id="user_div">
+		<form id="logout_form" name="logout_form" action="/logout" method="POST">
+			<a id="logout_submit" href="#">Log Out!</a>
+		</form>
+	</div>
 	<div id="canvasContainer">
-		<canvas id="mainCanvas" width="800", height="600">
+		<canvas id="mainCanvas" width="800" height="600">
 			Please use a browser compatible with HTML5 technologies.
 		</canvas>
 		<button id="upButton">Move Up</button>

@@ -4,12 +4,20 @@ html(lang='en')
     title OpenFarm Client
     meta(charset='UTF-8')
     link(rel='stylesheet', type='text/css', href='/resources/styles/gamestyles.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js')
     script(src='http://localhost:3000/socket.io/socket.io.js')
     script(src='/socket.io/socket.io.js')
     script(src='/resources/scripts/gameclient.js')
   body
+    #user_div
+      if gameData
+          each val in gameData
+              h3#username Username: #{val.user}
+              h3#date_created Date Created: #{val.dateCreated.getMonth() + 1}/#{val.dateCreated.getDate()}/#{val.dateCreated.getFullYear()}
+      form#logout_form(name='logout_form', action='/logout', method='GET')
+        a#logout_submit(href='#') Log Out!
     #canvasContainer
-      canvas#mainCanvas(width='800', ,='', height='600')
+      canvas#mainCanvas(width='800', height='600')
         | Please use a browser compatible with HTML5 technologies.
       button#upButton Move Up
       button#downButton Move Down

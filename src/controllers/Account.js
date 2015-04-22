@@ -1,6 +1,7 @@
 var models = require('../models');
 
 var Account = models.Account;
+var Game = models.Game;
 
 var loginPage = function(request, response){
 
@@ -11,11 +12,6 @@ var signupPage = function(request, response){
 
 	response.render('signup');
 };
-
-var gamePage = function(request, response){
-
-	response.render('game');
-}
 
 var logout = function(request, response){
 
@@ -79,7 +75,26 @@ var signup = function(request, response){
 
 			request.session.account = newAccount.toAPI();
 
-			response.json({redirect: '/game'});
+			var gameData = {
+
+				user: request.body.username,
+				owner: request.session.account._id
+			};
+
+			// Create a new game
+			var game = new Game.GameModel(gameData);
+
+			// Save the created game into mongodb
+			game.save(function(err){
+
+				if (err){
+
+					console.log(err);
+					return response.status(400).json({error: "Could not create game."});
+				}
+
+				response.json({redirect: '/game'});
+			});
 		});
 	});
 };
@@ -89,4 +104,3 @@ module.exports.login = login;
 module.exports.logout = logout;
 module.exports.signupPage = signupPage;
 module.exports.signup = signup;
-module.exports.gamePage = gamePage;

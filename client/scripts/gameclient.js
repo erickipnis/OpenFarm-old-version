@@ -33,6 +33,13 @@ function init(){
 
 	// Create a tile map by passing in the width and height of each tile
 	createTileMap(40, 40);
+
+	$("#logout_submit").on("click", function(){
+
+		sendAjaxData($("#logout_form").attr("action"), $("#logout_form").serialize());
+
+		return false;
+	});
 }
 
 window.onload = init;
@@ -177,4 +184,26 @@ function createTileMap(tileWidth, tileHeight){
 		
 	// restore the drawing state
 	ctx.restore();
+}
+
+function sendAjaxData(action, data){
+
+	$.ajax({
+
+		cache: false,
+		type: "GET",
+		url: action,
+		data: data,
+		dataType: "json",
+		success: function(result, status, xhr){
+
+			window.location = result.redirect;
+		},
+		error: function(xhr, status, error){
+
+			var jsonMsg = JSON.parse(xhr.responseText);
+
+			console.log(jsonMsg.error);
+		}
+	});
 }
