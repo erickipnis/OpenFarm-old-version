@@ -9,6 +9,10 @@ html(lang="en")
     script(src="/resources/scripts/gameclient.js")
   body
     #user_div
+      if gameData
+        each val in gameData
+          h3#username Username: #{val.user}
+          h3#date_created Date Created: #{val.dateCreated.getMonth() + 1}/#{val.dateCreated.getDate()}/#{val.dateCreated.getFullYear()}
       a#logout_submit(href="/logout") Log Out
     #canvasContainer
       canvas#mainCanvas(width="800", height="600")
