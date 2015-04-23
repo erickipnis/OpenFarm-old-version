@@ -33,13 +33,6 @@ function init(){
 
 	// Create a tile map by passing in the width and height of each tile
 	createTileMap(40, 40);
-
-	$("#logout_submit").on("click", function(){
-
-		sendAjaxData($("#logout_form").attr("action"), $("#logout_form").serialize());
-
-		return false;
-	});
 }
 
 window.onload = init;
@@ -130,6 +123,8 @@ function setupMouseEvents(){
 
 			socket.emit("onLeftMouseClick", playerData);
 		}
+
+		getMouse(event);
 	};
 }
 
@@ -186,7 +181,18 @@ function createTileMap(tileWidth, tileHeight){
 	ctx.restore();
 }
 
-function sendAjaxData(action, data){
+function getMouse(event){
+
+	var mouse = {}
+	mouse.x = event.pageX - event.target.offsetLeft;
+	mouse.y = event.pageY - event.target.offsetTop;
+
+	console.log(mouse);
+
+	return mouse;
+}
+
+/*function sendAjaxData(action, data){
 
 	$.ajax({
 
@@ -206,4 +212,4 @@ function sendAjaxData(action, data){
 			console.log(jsonMsg.error);
 		}
 	});
-}
+}*/

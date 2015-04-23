@@ -7,8 +7,8 @@ html(lang='en')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js')
     script(src='/resources/scripts/login.js')
   body
+    img#logo(src='/resources/img/logo.png', alt='OpenFarm Logo')
     #form_div
-      h1#title OpenFarm
       h3#login_title Login
       form#login_form(name='login_form', action='/login', method='POST')
         label#username_label(for='username') Username: 

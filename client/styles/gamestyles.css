@@ -80,5 +80,6 @@ html, body{
 
 #logout_submit{
 
-	
+	margin: 0 auto;
+	display: inline;
 }
