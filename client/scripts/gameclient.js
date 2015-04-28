@@ -209,7 +209,7 @@ function createTileMap(tileWidth, tileHeight){
 				img: images.soil
 			} 
 
-			ctx.drawImage(tileMap["Tile" + (j / tileHeight).toString() + (i / tileWidth).toString()], i, j);
+			ctx.drawImage(tileMap["Tile" + (j / tileHeight).toString() + (i / tileWidth).toString()].img, i, j);
 		}
 	}
 		
