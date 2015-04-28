@@ -1,5 +1,5 @@
 "use strict";
-
+//background-color: #01A611;
 var socket;
 var canvas;
 var ctx;
@@ -10,6 +10,10 @@ var leftButton;
 var rightButton;
 
 var tileMap;
+
+var preload;
+
+var images;
 
 function init(){
 
@@ -31,11 +35,19 @@ function init(){
 	setupButtonEvents();
 	setupMouseEvents();
 
-	// Create a tile map by passing in the width and height of each tile
+	/*var soilImg = new Image();
+
+	soilImg.onload = function(){
+
+		// Create a tile map by passing in the width and height of each tile
+		createTileMap(40, 40, soilImg);
+	}
+
+	soilImg.src = "/resources/img/soil.png";*/
 	createTileMap(40, 40);
 }
 
-window.onload = init;
+window.onload = loadImages;
 
 // Sets up the client-side, socket.io custom "on" event handlers to recieve data from the server
 function setupClientEvents(){
@@ -124,14 +136,37 @@ function setupMouseEvents(){
 			socket.emit("onLeftMouseClick", playerData);
 		}
 
-		getMouse(event);
+		var mouse = getMouse(event);
+
+		console.log("Clicked on tile: [" + Math.floor((mouse.y / 40)) + ", " + Math.floor((mouse.x / 40)) + "]");
 	};
+}
+
+function loadImages(){
+
+	preload = new createjs.LoadQueue(false);
+
+	preload.on("complete", function(){
+
+		images = {
+
+			soil: preload.getResult("soil"),
+			tomato1: preload.getResult("tomat01")
+		};
+
+		init();
+	});
+
+	preload.loadFile({id:"soil", src:"/resources/img/soil.png"});
+	preload.loadFile({id:"tomato1", src:"/resources/img/tomato1.png"});
 }
 
 function createTileMap(tileWidth, tileHeight){
 
 	var LINE_WIDTH = 3;
 	var LINE_COLOR = "black";
+
+	var soilImg = preload.getResult("soil");
 
 	ctx.save();
 		
@@ -165,17 +200,18 @@ function createTileMap(tileWidth, tileHeight){
 
 			// TODO: make seperate one for when i = 0 or when j = 0 or make seperate counters
 
-			tileMap["Tile" + j.toString() + i.toString()] = {
+			tileMap["Tile" + (j / tileHeight).toString() + (i / tileWidth).toString()] = {
 
 				xMin: i,
 				xMax: i + tileWidth,
 				yMin: j,
-				yMax: j + tileHeight
+				yMax: j + tileHeight,
+				img: images.soil
 			} 
+
+			ctx.drawImage(tileMap["Tile" + (j / tileHeight).toString() + (i / tileWidth).toString()], i, j);
 		}
 	}
-
-	console.log(tileMap);
 		
 	// restore the drawing state
 	ctx.restore();
