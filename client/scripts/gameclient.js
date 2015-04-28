@@ -1,5 +1,5 @@
 "use strict";
-//background-color: #01A611;
+
 var socket;
 var canvas;
 var ctx;
@@ -35,19 +35,58 @@ function init(){
 	setupButtonEvents();
 	setupMouseEvents();
 
-	/*var soilImg = new Image();
-
-	soilImg.onload = function(){
-
-		// Create a tile map by passing in the width and height of each tile
-		createTileMap(40, 40, soilImg);
-	}
-
-	soilImg.src = "/resources/img/soil.png";*/
-	createTileMap(40, 40);
+	initializeTileMap(40, 40);
 }
 
 window.onload = loadImages;
+
+function update(){
+
+	draw();
+}
+
+function draw(){
+
+	// Redraw the tilemap
+	drawTileMap(40, 40);
+}
+
+function drawTileMap(tileWidth, tileHeight){
+
+	// Clear the canvas
+	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);	
+			
+	for (var j = 0; j < ctx.canvas.height; j += tileHeight){
+
+		for (var i = 0; i < ctx.canvas.width; i += tileWidth){
+
+			ctx.drawImage(tileMap["Tile" + (j / tileHeight).toString() + (i / tileWidth).toString()].img, i, j);
+		}
+	}
+}
+
+function initializeTileMap(tileWidth, tileHeight){
+
+	// Clear the canvas
+	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);	
+			
+	for (var j = 0; j < ctx.canvas.height; j += tileHeight){
+
+		for (var i = 0; i < ctx.canvas.width; i += tileWidth){
+
+			tileMap["Tile" + (j / tileHeight).toString() + (i / tileWidth).toString()] = {
+
+				xMin: i,
+				xMax: i + tileWidth,
+				yMin: j,
+				yMax: j + tileHeight,
+				img: images.soil
+			} 
+
+			ctx.drawImage(tileMap["Tile" + (j / tileHeight).toString() + (i / tileWidth).toString()].img, i, j);
+		}
+	}
+}
 
 // Sets up the client-side, socket.io custom "on" event handlers to recieve data from the server
 function setupClientEvents(){
@@ -138,7 +177,9 @@ function setupMouseEvents(){
 
 		var mouse = getMouse(event);
 
-		console.log("Clicked on tile: [" + Math.floor((mouse.y / 40)) + ", " + Math.floor((mouse.x / 40)) + "]");
+		tileMap["Tile" + (Math.floor(mouse.y / 40)).toString() + (Math.floor(mouse.x / 40)).toString()].img = images.tomato1;
+
+		update();
 	};
 }
 
@@ -151,7 +192,7 @@ function loadImages(){
 		images = {
 
 			soil: preload.getResult("soil"),
-			tomato1: preload.getResult("tomat01")
+			tomato1: preload.getResult("tomato1")
 		};
 
 		init();
@@ -161,91 +202,11 @@ function loadImages(){
 	preload.loadFile({id:"tomato1", src:"/resources/img/tomato1.png"});
 }
 
-function createTileMap(tileWidth, tileHeight){
-
-	var LINE_WIDTH = 3;
-	var LINE_COLOR = "black";
-
-	var soilImg = preload.getResult("soil");
-
-	ctx.save();
-		
-	// set some drawing state variables
-	ctx.strokeStyle = LINE_COLOR;
-	ctx.fillStyle = '#01A611';
-	ctx.lineWidth = 0.5;
-	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-		
-	// Temporary vertical grid lines
-	for (var x = 0; x < ctx.canvas.width; x += tileWidth) {
-
-		ctx.beginPath();
-		ctx.moveTo(x, 0);
-		ctx.lineTo(x, ctx.canvas.height);
-		ctx.stroke();
-	}
-
-	// Temporary horizontal grid lines
-	for (var y = 0; y < ctx.canvas.height; y += tileHeight) {
-
-		ctx.beginPath();
-		ctx.moveTo(0, y);
-		ctx.lineTo(ctx.canvas.width, y);
-		ctx.stroke();
-	}	
-			
-	for (var j = 0; j < ctx.canvas.height; j += tileHeight){
-
-		for (var i = 0; i < ctx.canvas.width; i += tileWidth){
-
-			// TODO: make seperate one for when i = 0 or when j = 0 or make seperate counters
-
-			tileMap["Tile" + (j / tileHeight).toString() + (i / tileWidth).toString()] = {
-
-				xMin: i,
-				xMax: i + tileWidth,
-				yMin: j,
-				yMax: j + tileHeight,
-				img: images.soil
-			} 
-
-			ctx.drawImage(tileMap["Tile" + (j / tileHeight).toString() + (i / tileWidth).toString()].img, i, j);
-		}
-	}
-		
-	// restore the drawing state
-	ctx.restore();
-}
-
 function getMouse(event){
 
 	var mouse = {}
 	mouse.x = event.pageX - event.target.offsetLeft;
 	mouse.y = event.pageY - event.target.offsetTop;
 
-	console.log(mouse);
-
 	return mouse;
 }
-
-/*function sendAjaxData(action, data){
-
-	$.ajax({
-
-		cache: false,
-		type: "GET",
-		url: action,
-		data: data,
-		dataType: "json",
-		success: function(result, status, xhr){
-
-			window.location = result.redirect;
-		},
-		error: function(xhr, status, error){
-
-			var jsonMsg = JSON.parse(xhr.responseText);
-
-			console.log(jsonMsg.error);
-		}
-	});
-}*/
