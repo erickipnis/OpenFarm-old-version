@@ -17,6 +17,9 @@ var images;
 
 function init(){
 
+	var tileWidth = 40;
+	var tileHeight = 40;
+
 	// Connect the client socket
 	socket = io.connect();
 
@@ -29,29 +32,28 @@ function init(){
 	leftButton = document.querySelector("#leftButton");
 	rightButton = document.querySelector("#rightButton");
 
-	tileMap = {};
-
-	setupClientEvents();
+	setupClientEvents(tileWidth, tileHeight);
 	setupButtonEvents();
-	setupMouseEvents();
-
-	initializeTileMap(40, 40);
+	setupMouseEvents(tileWidth, tileHeight);
 }
 
 window.onload = loadImages;
 
-function update(){
+function update(tileWidth, tileHeight){
 
-	draw();
+	draw(tileWidth, tileHeight);
 }
 
-function draw(){
+function draw(tileWidth, tileHeight){
 
 	// Redraw the tilemap
-	drawTileMap(40, 40);
+	drawTileMap(tileWidth, tileHeight);
 }
 
 function drawTileMap(tileWidth, tileHeight){
+
+	var tileImageName;
+	var tileImage;
 
 	// Clear the canvas
 	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);	
@@ -60,12 +62,19 @@ function drawTileMap(tileWidth, tileHeight){
 
 		for (var i = 0; i < ctx.canvas.width; i += tileWidth){
 
-			ctx.drawImage(tileMap["Tile" + (j / tileHeight).toString() + (i / tileWidth).toString()].img, i, j);
+			tileImageName = tileMap["Tile" + (j / tileHeight).toString() + (i / tileWidth).toString()].img;
+
+			tileImage = preload.getResult(tileImageName);
+
+			ctx.drawImage(tileImage, i, j);
 		}
 	}
 }
 
 function initializeTileMap(tileWidth, tileHeight){
+
+	var tileImageName;
+	var tileImage;
 
 	// Clear the canvas
 	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);	
@@ -83,13 +92,17 @@ function initializeTileMap(tileWidth, tileHeight){
 				img: images.soil
 			} 
 
-			ctx.drawImage(tileMap["Tile" + (j / tileHeight).toString() + (i / tileWidth).toString()].img, i, j);
+			tileImageName = tileMap["Tile" + (j / tileHeight).toString() + (i / tileWidth).toString()].img;
+
+			tileImage = preload.getResult(tileImageName);
+
+			ctx.drawImage(tileImage, i, j);
 		}
 	}
 }
 
 // Sets up the client-side, socket.io custom "on" event handlers to recieve data from the server
-function setupClientEvents(){
+function setupClientEvents(tileWidth, tileHeight){
 
 	socket.on("onMoveUp", function(playerData){
 
@@ -114,6 +127,23 @@ function setupClientEvents(){
 	socket.on("onLeftMouseClick", function(playerData){
 
 		console.log("The player " + playerData.message);
+	});
+
+	socket.on("onTileMapSetup", function(tileMapObj){
+
+		console.dir(tileMapObj);
+		tileMap = tileMapObj;
+
+		var tileMapSize = Object.keys(tileMap).length
+
+		if (tileMapSize === 0){
+
+			initializeTileMap(tileWidth, tileHeight);
+		}
+		else if (tileMapSize > 0){
+
+			drawTileMap(tileWidth, tileHeight);
+		}
 	});
 }
 
@@ -161,7 +191,7 @@ function setupButtonEvents(){
 	};
 }
 
-function setupMouseEvents(){
+function setupMouseEvents(tileWidth, tileHeight){
 
 	canvas.onclick = function(event){
 
@@ -177,9 +207,19 @@ function setupMouseEvents(){
 
 		var mouse = getMouse(event);
 
-		tileMap["Tile" + (Math.floor(mouse.y / 40)).toString() + (Math.floor(mouse.x / 40)).toString()].img = images.tomato1;
+		var tileRow = Math.floor(mouse.y / tileHeight).toString();
+		var tileColumn = Math.floor(mouse.x / tileWidth).toString();
 
-		update();
+		tileMap["Tile" + tileRow + tileColumn].img = images.tomato1;
+
+		update(tileWidth, tileHeight);
+		console.log(tileMap);
+
+		//var stringifiedTileMap = JSON.stringify(tileMap);
+		//console.log(stringifiedTileMap);
+
+		//socket.emit("onTileMapChange", stringifiedTileMap);
+		socket.emit("onTileMapChange", tileMap);
 	};
 }
 
@@ -191,8 +231,8 @@ function loadImages(){
 
 		images = {
 
-			soil: preload.getResult("soil"),
-			tomato1: preload.getResult("tomato1")
+			soil: "soil",
+			tomato1: "tomato1"
 		};
 
 		init();

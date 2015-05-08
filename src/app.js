@@ -6,8 +6,18 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var session = require('express-session');
-var RedisStore = require('connect-redis')(session) ;
-var url = require('url');
+var Session = session.Session;
+var RedisStore = require('connect-redis')(session);
+var url = require('url'); 
+var cookie = require('cookie');
+var app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+var sockets = require('./sockets.js');
+var ioRedis = require('socket.io-redis');
+var router = require('./router.js');
+
+var port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 var dbURL = process.env.MONGOLAB_URI || "mongodb://localhost/OpenFarm";
 
@@ -33,14 +43,12 @@ if (process.env.REDISCLOUD_URL){
 	redisPass = redisURL.auth.split(':')[1];
 }
 
-// Bring in the page router
-var router = require('./router.js');
+var sessionStore = new RedisStore({
 
-var port = process.env.PORT || process.env.NODE_PORT || 3000;
-
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+		host: redisURL.hostname,
+		port: redisURL.port,
+		pass: redisPass
+});
 
 app.use('/resources', express.static(path.resolve(__dirname + '../../client/')));
 app.use(compression());
@@ -52,17 +60,80 @@ app.use(bodyParser.urlencoded({
 
 app.use(session({
 
-	store: new RedisStore({
+	key: "openfarm.sid",
 
-		host: redisURL.hostname,
-		port: redisURL.port,
-		pass: redisPass
-	}),
+	store: sessionStore,
 
 	secret: 'Open Farm',
 	resave: true,
 	saveUninitialized: true
 }));
+
+
+// Setup socket.io-redis to be able to store session id in redis and use in socket.io server side for mongodb queries
+var ioRedisClient = require('socket.io-redis/node_modules/redis').createClient,
+	ropts = {/*Redis Options*/}, subOpts = {detect_buffers: true},
+	pub = ropts.socket ? ioRedisClient(ropts.socket) : ioRedisClient(ropts.port, ropts.host),
+	sub = ropts.socket ? ioRedisClient(ropts.socket, subOpts) : ioRedisClient(ropts.port, ropts.host, subOpts);
+
+if (ropts.pass) {
+
+	pub.auth(ropts.pass, function(err){
+
+		if (err){
+
+			throw err;
+		}
+	});
+
+	sub.auth(ropts.pass, function(err){
+
+		if (err){
+
+			throw err;
+		}
+	});
+}
+
+io.adapter(require('socket.io-redis')({
+
+	pubClient: pub, 
+	subClient: sub
+}));
+
+//var socketStorage = ioRedisClient();
+
+// Allow socket.io to hold onto the session through redis client
+io.use(function(socket, callback){
+
+	if (!socket.handshake.headers.cookie){
+
+		return callback(new Error("No cookie was found on authorization request!"));
+	}
+
+	socket.cookie = cookie.parse(socket.handshake.headers.cookie);
+	socket.sessionId = socket.cookie['openfarm.sid'].substring(2, 34);
+	//console.log(socket.cookie['openfarm.sid']);
+
+	sessionStore.load(socket.sessionId, function(err, session){
+
+		if (err || !session){
+
+			return callback(new Error("Session was not found!"));
+		}
+
+		if (!session && !session.account){
+
+			return callback(new Error("User does not have proper authentication!"));
+		}
+
+		socket.session = new Session(socket, session);
+
+		callback(null, true);
+	});
+});
+
+//sockets.configureSockets(io, socketStorage);
 
 app.set('view engine', 'jade');
 app.set('views', __dirname + '/views');
@@ -73,47 +144,7 @@ app.use(cookieParser());
 // Have the express server wait for a connection to the port which will also start up socket.io upon connecting
 server.listen(port);
 
+sockets.setupConnection(io);
+
 // Pass the app to the router to hook up all of the jade views
 router(app);
-
-function setupMovementEvents(){
-
-	socket.on("onMoveUp", function(playerData){
-
-		io.sockets.in("room1").emit("onMoveUp", playerData);
-	});
-
-	socket.on("onMoveDown", function(playerData){
-
-		io.sockets.in("room1").emit("onMoveDown", playerData);
-	});
-
-	socket.on("onMoveLeft", function(playerData){
-
-		io.sockets.in("room1").emit("onMoveLeft", playerData);
-	});
-
-	socket.on("onMoveRight", function(playerData){
-
-		io.sockets.in("room1").emit("onMoveRight", playerData);
-	});
-
-}
-
-function setupMouseEvents(){
-
-	socket.on("onLeftMouseClick", function(playerData){
-
-		io.sockets.in("room1").emit("onLeftMouseClick", playerData);
-	});
-}
-
-io.sockets.on('connection', function(connectionSocket){
-
-	socket = connectionSocket;
-
-	socket.join('room1');
-
-	setupMovementEvents();
-	setupMouseEvents();
-});
