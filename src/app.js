@@ -138,7 +138,7 @@ io.use(function(socket, callback){
 app.set('view engine', 'jade');
 app.set('views', __dirname + '/views');
 
-app.use(favicon(__dirname + '/../client/img/favicon.png'));
+app.use(favicon(__dirname + '/../client/img/favicon.ico'));
 app.use(cookieParser());
 
 // Have the express server wait for a connection to the port which will also start up socket.io upon connecting
