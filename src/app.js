@@ -72,8 +72,8 @@ app.use(session({
 
 // Setup socket.io-redis to be able to store session id in redis and use in socket.io server side for mongodb queries
 var ioRedisClient = require('socket.io-redis/node_modules/redis').createClient,
-	ropts = {/*Redis Options*/}, subOpts = {detect_buffers: true},
-	pub = ropts.socket ? ioRedisClient(ropts.socket) : ioRedisClient(ropts.port, ropts.host),
+	ropts = {host: redisURL.hostname, port: redisURL.port}, subOpts = {detect_buffers: true, auth_pass: redisPass},
+	pub = ropts.socket ? ioRedisClient(ropts.socket, subOpts) : ioRedisClient(ropts.port, ropts.host, subOpts),
 	sub = ropts.socket ? ioRedisClient(ropts.socket, subOpts) : ioRedisClient(ropts.port, ropts.host, subOpts);
 
 if (ropts.pass) {
