@@ -64,3 +64,8 @@ html, body{
 	margin: 0 auto;
 	display: block;
 }
+
+#attributions_paragraph{
+
+	padding-top: 10px;
+}

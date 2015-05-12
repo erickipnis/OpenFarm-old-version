@@ -16,6 +16,7 @@ var io = require('socket.io')(server);
 var sockets = require('./sockets.js');
 var ioRedis = require('socket.io-redis');
 var router = require('./router.js');
+var csrf = require('csurf');
 
 var port = process.env.PORT || process.env.NODE_PORT || 3000;
 
@@ -140,6 +141,21 @@ app.set('views', __dirname + '/views');
 
 app.use(favicon(__dirname + '/../client/img/favicon.ico'));
 app.use(cookieParser());
+
+// Use CSURF to generate unique tokens to be checked for on POST requests for added security.
+app.use(csrf());
+
+app.use(function(err, request, response, next){
+
+	// If the user has a valid CSRF token, then let them proceed with the request
+	if (err.code !== 'EBADCSRFTOKEN'){
+
+		return next(err);
+	} 
+
+	// If a bad CSRF token then just return to cancel the request from the potential attacker
+	return;
+});
 
 // Have the express server wait for a connection to the port which will also start up socket.io upon connecting
 server.listen(port);

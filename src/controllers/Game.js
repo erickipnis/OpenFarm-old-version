@@ -14,7 +14,7 @@ var gamePage = function(request, response){
 			return response.status(400).json({error: "Could not find information in the database associated with the id that was queried."});
 		}
 
-		response.render('game', {gameData: game});
+		response.render('game', {gameData: game, csrfToken: request.csrfToken()});
 	});
 };
 

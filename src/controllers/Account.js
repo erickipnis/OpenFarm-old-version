@@ -5,12 +5,17 @@ var Game = models.Game;
 
 var loginPage = function(request, response){
 
-	response.render('login');
+	response.render('login', {csrfToken: request.csrfToken()});
 };
 
 var signupPage = function(request, response){
 
-	response.render('signup');
+	response.render('signup', {csrfToken: request.csrfToken()});
+};
+
+var attributionsPage = function(request, response){
+
+	response.render('attributions');
 };
 
 var logout = function(request, response){
@@ -104,3 +109,4 @@ module.exports.login = login;
 module.exports.logout = logout;
 module.exports.signupPage = signupPage;
 module.exports.signup = signup;
+module.exports.attributionsPage = attributionsPage;

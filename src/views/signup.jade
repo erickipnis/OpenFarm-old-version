@@ -17,11 +17,14 @@ html(lang='en')
         input#password_input(type='password', name='password', placeholder='password')
         label#password_label2(for='password2') Confirm: 
         input#password_input2(type='password', name='password2', placeholder='confirm password')
+        input(type="hidden", name="_csrf", value="#{csrfToken}")
         a#signup_submit(href='#') Submit
     #info_div
       p#login_paragraph
         | Already have an account? 
-        a#login_link(href='/login') Log in!
+        a#login_link(href='/login') Log in
+      p#attributions_paragraph
+        a#attributions_link(href='/attributions') Attributions
     #error_div
       h3
         span#error_msg
